@@ -27,7 +27,8 @@ class ZhihuPipeline(object):
             if not data:
                 raise ZhihuItem("Missing {0}!".format(data))
         else:
-            self.collection.insert(dict(item))
-            log.msg("Question added to MongoDB database!",
-                    level=log.DEBUG, spider=spider)
+            if not self.collection.find({'url': item['url']}).count():
+                self.collection.insert(dict(item))
+                log.msg("Question added to MongoDB database!",
+                        level=log.DEBUG, spider=spider)
         return item

@@ -13,7 +13,7 @@ class ZhihuSpider(CrawlSpider):
     )
     rules = (
         # Rule(LinkExtractor(allow=[r'/question/\d{8}/log$']), callback='logined_parse'),
-        Rule(LinkExtractor(allow=['www.zhihu.com/question/\d{8}#']), callback=None),
+        Rule(LinkExtractor(allow=['www.zhihu.com/people/'], deny=['followees', 'followers', 'followed', 'topics']), follow=True),
         Rule(LinkExtractor(allow=['www.zhihu.com/question/\d{8}$']), callback='unlogined_parse'),
     )
 
@@ -32,8 +32,8 @@ class ZhihuSpider(CrawlSpider):
         item = ZhihuItem()
         item['url'] = response.url
         item['question'] = response.xpath("//*[@id='zh-question-title']/h2/text()").re(r'.+')[0]
-        item['follow_count'] = response.xpath('//*[@id="zh-question-side-header-wrap"]/text()').re(r'(\d+)')[0]
-        item['answer_count'] = response.xpath('//div[@class="zh-answers-title clearfix"]/h3/text()').re(r'(\d+)')[0]
-
+        item['follow_count'] = int(response.xpath('//*[@id="zh-question-side-header-wrap"]/text()').re(r'(\d+)')[0])
+        answer_count = response.xpath('//div[@class="zh-answers-title clearfix"]/h3/text()').re(r'(\d+)')
+        item['answer_count'] = int(answer_count[0]) if answer_count else 1
         yield item
 
