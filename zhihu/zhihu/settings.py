@@ -24,13 +24,31 @@ NEWSPIDER_MODULE = 'zhihu.spiders'
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-#DOWNLOAD_DELAY=3
+DOWNLOAD_DELAY=0.25
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN=16
 #CONCURRENT_REQUESTS_PER_IP=16
 
 # Disable cookies (enabled by default)
-COOKIES_ENABLED=False
+COOKIES_ENABLED = True
+# COOKIES_DEBUG = True
+
+COOKIES={
+    # '_za': '8b3bdb96-7784-451d-bfb0-726fba7c14b8',
+    # 'q_c1': "bee7ddc5d3ea446ea2a9b7daf9ef1b14|1436940809000|1436940809000",
+    # 'cap_id': "MTk4NWE0MGFjZWY3NDg1NDg2NGNiNjAwYmFlZmIzZDA=|1436940809|f825d3c97ae7c5f3a838c3904509fc7650965a63",
+    # '_xsrf': '9310e9977866ce371bcd7c99c38310af',
+    # '_gat': '1',
+    # '__utmt': '1',
+    # '__utma': '51854390.1083912520.1436938228.1436938228.1436938228.1',
+    # '__utmb': '51854390.20.10.1436938228',
+    # '__utmc': '51854390',
+    # '__utmz': '51854390.1436938228.1.1.utmcsr=zhihu.com|utmccn=(referral)|utmcmd=referral|utmcct=/',
+    # '__utmv': '51854390.000--|2=registration_date=20150715=1^3=entry_date=20150715=1',
+    # '_ga': 'GA1.2.1083912520.1436938228',
+    'z_c0': "QUJCTUViRHpZd2dYQUFBQVlRSlZUZWZCelZVOEtXOGFYZE4yaE4xWDBLVkY4U09xSWNiVFRRPT0=|1436955879|54180840244374e947f7a31187cfdf7306e7191f",
+    # 'unlock_ticket': "QUJCTUViRHpZd2dYQUFBQVlRSlZUUU1pcGxXekhTQ0RWNm54Q2pSa1kwTUJTVktSMmYyTHRBPT0=|1436949243|09c05223d3e848ca8e7bbefd8d0c3e27d02c9062"
+}
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED=False
