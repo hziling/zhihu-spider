@@ -31,4 +31,8 @@ class ZhihuPipeline(object):
                 self.collection.insert(dict(item))
                 log.msg("Question added to MongoDB database!",
                         level=log.DEBUG, spider=spider)
+            else:
+                self.collection.update({'url': item['url']}, dict(item))
+                log.msg("Question update to MongoDB database!",
+                        level=log.DEBUG, spider=spider)
         return item

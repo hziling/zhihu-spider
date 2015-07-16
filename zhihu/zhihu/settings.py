@@ -67,9 +67,14 @@ COOKIES={
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#DOWNLOADER_MIDDLEWARES = {
-#    'zhihu.middlewares.MyCustomDownloaderMiddleware': 543,
-#}
+DOWNLOADER_MIDDLEWARES = {
+    # 'zhihu.middlewares.MyCustomDownloaderMiddleware': 543,
+    # 'zhihu.contrib.downloadmiddleware.google_cache.GoogleCacheMiddleware':50,
+    # 'zhihu.contrib.downloadmiddleware.random_userproxy.ProxyMiddleware': 100,
+    # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
+    # 'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    'zhihu.contrib.downloadmiddleware.rotate_useragent.RotateUserAgentMiddleware':400,
+}
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -105,3 +110,19 @@ MONGODB_COLLECTION = 'zhihu'
 #HTTPCACHE_DIR='httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES=[]
 #HTTPCACHE_STORAGE='scrapy.extensions.httpcache.FilesystemCacheStorage'
+
+
+PROXIES = [
+    {'ip_port': '183.221.147.50:8123', 'user_pass': ''},
+    {'ip_port': '117.136.234.12:80', 'user_pass': ''},
+    {'ip_port': '117.136.234.8:80', 'user_pass': ''},
+    {'ip_port': '117.136.234.18:80', 'user_pass': ''},
+    {'ip_port': '117.136.234.6:80', 'user_pass': ''},
+    {'ip_port': '117.136.234.3:80', 'user_pass': ''},
+]
+
+
+#广度优先
+# DEPTH_PRIORITY = 1
+# SCHEDULER_DISK_QUEUE = 'scrapy.squeue.PickleFifoDiskQueue'
+# SCHEDULER_MEMORY_QUEUE = 'scrapy.squeue.FifoMemoryQueue'

@@ -13,13 +13,15 @@ class ZhihuSpider(CrawlSpider):
     login_page = 'http://www.zhihu.com/#signin'
 
     start_urls = (
-        'http://www.zhihu.com/topic/19560170',
+        'http://www.zhihu.com/topics',
+        # 'http://www.zhihu.com/question/20091578',
     )
     rules = (
-        Rule(LinkExtractor(allow=[r'/question/\d{8}/log$']), callback='logined_parse'),
+        # Rule(LinkExtractor(allow=[r'/question/\d{8}/log$']), callback='logined_parse'),
         # Rule(LinkExtractor(allow=['www.zhihu.com/people/followees'], deny=['followees', 'followers', 'followed', 'topics']), follow=False),
         # Rule(LinkExtractor(allow=['www.zhihu.com/people/']), follow=True),
-        Rule(LinkExtractor(allow=['/topic/\d{8}', '/question/\d{8}']), follow=True),
+        Rule(LinkExtractor(allow=[r'/question/\d{8}$']), callback='question_parse'),
+        Rule(LinkExtractor(allow=['/topic/\d{8}$'], deny=['answer']), follow=True),
         # Rule(LinkExtractor(allow=['/followees']), follow=False, callback='unlogined_parse'),
     )
 
@@ -59,25 +61,42 @@ class ZhihuSpider(CrawlSpider):
                             },
                             cookies=self.cookies,
                             callback=self.after_login,
-                            # dont_filter=True
                             )]
 
     def after_login(self, response):
         for url in self.start_urls:
             yield self.make_requests_from_url(url)
 
-    def logined_parse(self, response):
+    def question_log_parse(self, response):
 
-        item = ZhihuItem()
-        item['url'] = response.url
+        item = response.meta['item']
+        # item = ZhihuItem()
+        # item['url'] = response.url
         item['question'] = response.xpath("//div[@id='zh-question-title']/h2/a/text()").extract()[0]
-        item['follow_count'] = response.xpath("//div[@class='zg-gray-normal']/a/strong/text()").extract()[0]
+        item['follow_count'] = int(response.xpath("//div[@class='zg-gray-normal']/a/strong/text()").extract()[0])
         # item['scan_count'] = response.xpath("/html/body/div[3]/div[2]/div[3]/div/div[2]/strong[1]").extract()
-        answer_count = response.xpath('//div[@class="zh-answers-title clearfix"]/h3/text()').re(r'(\d+)')
-        item['answer_count'] = int(answer_count[0]) if answer_count else 1
+        item = response.meta['item']
+        # answer_count = response.xpath("//h3[@id='zh-question-answer-num']/text()").re(r'(\d+)')
+        # item['answer_count'] = int(answer_count[0]) if answer_count else 1
         item['created'] = response.xpath("//*[@id='zh-question-log-list-wrap']/div[1]/div[@class='zm-item-meta']/time/text()").extract()[0]
 
         yield item
+
+    def question_parse(self, response):
+        self.log('A response from %s just arrived!' % response.url)
+        item = ZhihuItem()
+        item['url'] = response.url
+        # item['question'] = response.xpath("//*[@id='zh-question-title']/h2/text()").re(r'.+')[0]
+        # item['follow_count'] = int(response.xpath('//*[@id="zh-question-side-header-wrap"]/text()').re(r'(\d+)')[0])
+        answer_count = response.xpath('//div[@class="zh-answers-title clearfix"]/h3/text()').re(r'(\d+)')
+        item['answer_count'] = int(answer_count[0]) if answer_count else 1
+
+        # 传递参数给question_log_parse，因为要抓取时间
+        request = Request(response.url+'/log', callback=self.question_log_parse)
+        request.meta['item'] = item
+
+        return request
+
 
     def unlogined_parse(self, response):
         with open('zhihu.html', 'wb') as f:
