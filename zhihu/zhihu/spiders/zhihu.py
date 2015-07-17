@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
-import scrapy
 from scrapy.spiders import CrawlSpider, Rule
 from scrapy.linkextractors import LinkExtractor
 from scrapy import Request, FormRequest
 from ..items import ZhihuItem
-from ..settings import COOKIES
+from ..settings import COOKIES, EMAIL, PASSWORD
 
 
 class ZhihuSpider(CrawlSpider):
@@ -48,7 +47,7 @@ class ZhihuSpider(CrawlSpider):
         print 'Preparing login'
         #下面这句话用于抓取请求网页后返回网页中的_xsrf字段的文字, 用于成功提交表单
         xsrf = response.xpath('//input[@name="_xsrf"]/@value').extract()[0]
-        print xsrf
+
         #FormRequeset.from_response是Scrapy提供的一个函数, 用于post表单
         #登陆成功后, 会调用after_login回调函数
         return [FormRequest.from_response(response,   #"http://www.zhihu.com/#signin",
@@ -56,8 +55,8 @@ class ZhihuSpider(CrawlSpider):
                             headers=self.headers,  #注意此处的headers
                             formdata={
                                 '_xsrf': xsrf,
-                                'email': '2280909422@qq.com',
-                                'password': '123123'
+                                'email': EMAIL,
+                                'password': PASSWORD
                             },
                             cookies=self.cookies,
                             callback=self.after_login,
@@ -101,13 +100,12 @@ class ZhihuSpider(CrawlSpider):
     def unlogined_parse(self, response):
         with open('zhihu.html', 'wb') as f:
             f.write(response.body)
-        # print response.body
-        # self.log('A response from %s just arrived!' % response.url)
-        # item = ZhihuItem()
-        # item['url'] = response.url
-        # item['question'] = response.xpath("//*[@id='zh-question-title']/h2/text()").re(r'.+')[0]
-        # item['follow_count'] = int(response.xpath('//*[@id="zh-question-side-header-wrap"]/text()').re(r'(\d+)')[0])
-        # answer_count = response.xpath('//div[@class="zh-answers-title clearfix"]/h3/text()').re(r'(\d+)')
-        # item['answer_count'] = int(answer_count[0]) if answer_count else 1
-        # yield item
+        self.log('A response from %s just arrived!' % response.url)
+        item = ZhihuItem()
+        item['url'] = response.url
+        item['question'] = response.xpath("//*[@id='zh-question-title']/h2/text()").re(r'.+')[0]
+        item['follow_count'] = int(response.xpath('//*[@id="zh-question-side-header-wrap"]/text()').re(r'(\d+)')[0])
+        answer_count = response.xpath('//div[@class="zh-answers-title clearfix"]/h3/text()').re(r'(\d+)')
+        item['answer_count'] = int(answer_count[0]) if answer_count else 1
+        yield item
 

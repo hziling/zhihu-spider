@@ -24,7 +24,7 @@ NEWSPIDER_MODULE = 'zhihu.spiders'
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY=0.25
+DOWNLOAD_DELAY = 0.25
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN=16
 #CONCURRENT_REQUESTS_PER_IP=16
@@ -32,6 +32,9 @@ DOWNLOAD_DELAY=0.25
 # Disable cookies (enabled by default)
 COOKIES_ENABLED = True
 # COOKIES_DEBUG = True
+
+EMAIL = ''
+PASSWORD = ''
 
 COOKIES={
     # '_za': '8b3bdb96-7784-451d-bfb0-726fba7c14b8',
@@ -70,10 +73,10 @@ COOKIES={
 DOWNLOADER_MIDDLEWARES = {
     # 'zhihu.middlewares.MyCustomDownloaderMiddleware': 543,
     # 'zhihu.contrib.downloadmiddleware.google_cache.GoogleCacheMiddleware':50,
-    # 'zhihu.contrib.downloadmiddleware.random_userproxy.ProxyMiddleware': 100,
-    # 'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
-    # 'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
-    'zhihu.contrib.downloadmiddleware.rotate_useragent.RotateUserAgentMiddleware':400,
+    'zhihu.contrib.downloadmiddleware.random_userproxy.ProxyMiddleware': 100,
+    'scrapy.contrib.downloadermiddleware.httpproxy.HttpProxyMiddleware': 110,
+    'scrapy.contrib.downloadermiddleware.useragent.UserAgentMiddleware': None,
+    'zhihu.contrib.downloadmiddleware.rotate_useragent.RotateUserAgentMiddleware': 400,
 }
 
 # Enable or disable extensions
